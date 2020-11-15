@@ -1,7 +1,7 @@
 // arm_io_port_modified.v
 // Single-cycle implementation of a subset of ARMv4 with i/O port capability modified for neural network module compatibility.
 
-module arm_with_nn_module_tb();
+module arm_with_nn_module_tb1();
 
   logic        clk;
   logic        reset;
@@ -26,12 +26,15 @@ endmodule
 
 
 
-module arm_with_nn_module(input  logic       clk, reset,
+module arm_with_nn_module_tb(input  logic clk, reset,
            input  logic [7:0] INport,
-           output logic [7:0] OUTport);
+           output logic [7:0] OUTport,
+			  output logic ready, 
+			  output logic [31:0] WriteData, DataAdr);
 
-  logic [31:0] WriteData, DataAdr; 
-  logic        MemWrite, MemtoReg, PortSel, run_inference, ready, nn_we;
+  // logic [31:0] WriteData, DataAdr; 
+  logic        MemWrite, MemtoReg, PortSel, run_inference, nn_we;
+  // logic        ready;
   logic [31:0] PC, Instr, ReadData, MemData;
   logic [7:0] INData, nn_wd, nn_rd;
   logic [9:0] nn_address;
@@ -139,7 +142,7 @@ module decode(input  logic [1:0] Op,
   	                        // B
   	  2'b10:                controls = 10'b0110100010;
   	                        // Neural control
-      2'b11:			          controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
+     2'b11:			         controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
   	                        // Unimplemented
   	  default:              controls = 10'bx;          
   	endcase
