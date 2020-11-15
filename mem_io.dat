@@ -1,0 +1,76 @@
+E04F000F //  		SUB R0, R15, R15   		1110(cond=AL) 00(op=DP) 0(i=Rg) 0010(cmd=SUB) 0(s) 1111(Rn) 0000(Rd) 0000 0(Shamt5) 00(sh) 0() 1111(Rm)
+E2802007 //  		ADD R2, R0, #7			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0010(Rn) 0000(Rd) 0000(rot) 0000 0111(imm8)
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E0800000 //   	ADD R0, R0, R0			  1110(cond=AL) 00(op=DP) 0(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0000(Rd) 0000 0(Shamt5) 00(sh) 0() 0000(Rm)
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+EC100000 //     DISABLE INTERRUPT        1110(cond=AL) 1101(op=NN) 00000000000000000000000000
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+EC000000 //     ENABLE INTERRUPT        1110(cond=AL) 1100(op=NN) 00000000000000000000000000
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+EC200000 //     RUN INFERENCE       1110(cond=AL) 1110(op=NN) 00000000000000000000000000
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8)
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+E2804000 //  		ADD R0, R0, #0			1110(cond=AL) 00(op=DP) 1(i=Imm) 0100(cmd=ADD) 0(s) 0000(Rn) 0100(Rd) 0000(rot) 0000 1111(imm8) 
+
+
+
+
+
+
+
+
+// PROGRAMA PRINCIPAL
+
+// ADD R0, R0, #0
+// ADD R1, R0, R0
+// ENABLE INTERRUPT
+// ADD R2, R0, #-25
+// STR R2, #512
+// ADD R3, R0, #25
+// STR R3, #513
+// RUN_INFERENCE
+// SUB R4, R1, #1,
+// BEQ R4, #1
+// ADD R2, R0, R0
+// STR R2, #512
+// ADD R3, R0, #50
+// STR R3, #513
+// RUN_INFERENCE
+// SUB R4, R1, #1,
+// BEQ R4, #1
+// ADD R2, R0, #-25
+// STR R2, #512
+// ADD R3, R0, #25
+// STR R3, #513
+// RUN_INFERENCE
+// SUB R4, R1, #1,
+// BEQ R4, #1
+
+
+
+// SUBRUTINA
+
+// ADD R1, R1, #1
+// STR R1, #514
+// RETURN TO LINKER
+
+
+
+

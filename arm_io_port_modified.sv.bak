@@ -1,32 +1,7 @@
 // arm_io_port_modified.v
 // Single-cycle implementation of a subset of ARMv4 with i/O port capability modified for neural network module compatibility.
 
-module arm_with_nn_module_tb();
-
-  logic        clk;
-  logic        reset;
-  logic [7:0] INport, OUTport;
-
-  // instantiate device to be tested
-  arm_with_nn_module dut(clk, reset, INport, OUTport);
-  
-  // initialize test
-  initial
-    begin
-      reset <= 1; # 22; reset <= 0;
-    end
-
-  // generate clock to sequence tests
-  always
-    begin
-      clk <= 1; # 5; clk <= 0; # 5;
-    end
-
-endmodule
-
-
-
-module arm_with_nn_module(input  logic       clk, reset,
+module top(input  logic       clk, reset,
            input  logic [7:0] INport,
            output logic [7:0] OUTport);
 
@@ -38,15 +13,27 @@ module arm_with_nn_module(input  logic       clk, reset,
 
   // instantiate processor and memories
   arm arm(clk, reset, PC, Instr, MemWrite, MemtoReg, DataAdr, 
-          WriteData, ReadData, run_inference, ready);
+          WriteData, ReadData, InterruptEnable, run_inference, ready);
   imem imem(PC, Instr);
-  mixed_width_true_dual_port_ram RAM(nn_address, DataAdr[31:2], nn_wd, WriteData, nn_we, MemWrite, clk, nn_rd, MemData);   //   1: nn | 2: arm 
+  mixed_width_true_dual_port_ram RAM(nn_address, DataAdr[31:2], nn_wd, WriteData, nn_we, MemWrite, clk, nn_rd, ReadData);   //   1: nn | 2: arm 
   neural nn(clk, reset, run_inference, ready, nn_address, nn_wd, nn_we, nn_rd);
   // instantiate i/O ports at 0x7FC address
   cmp2 #(32) compare  (32'h7FC, DataAdr, PortSel);
   mux2 #(32) mem_portmux (MemData, {24'b0,INData}, PortSel, ReadData);
   port inport (clk, PortSel & MemtoReg, INport, INData);
   port outport (clk, PortSel & MemWrite, WriteData[7:0], OUTport);
+endmodule
+
+module dmem(input  logic        clk, we,
+            input  logic [31:0] a, wd,
+            output logic [31:0] rd);
+
+  logic [31:0] RAM[63:0];
+
+  assign rd = RAM[a[31:2]]; // word aligned
+
+  always_ff @(posedge clk)
+    if (we) RAM[a[31:2]] <= wd;
 endmodule
 
 module imem(input  logic [31:0] a,
