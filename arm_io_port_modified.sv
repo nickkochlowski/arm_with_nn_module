@@ -92,7 +92,7 @@ module arm(input  logic        clk, reset,
 endmodule
 
 module controller(input  logic         clk, reset,
-	              input  logic [31:12] Instr,
+	                input  logic [31:12] Instr,
                   input  logic [3:0]   ALUFlags,
                   output logic [1:0]   RegSrc,
                   output logic         RegWrite,
@@ -142,7 +142,7 @@ module decode(input  logic [1:0] Op,
   	                        // B
   	  2'b10:                controls = 10'b0110100010;
   	                        // Neural control
-     2'b11:			         controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
+      2'b11:			          controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
   	                        // Unimplemented
   	  default:              controls = 10'bx;          
   	endcase
@@ -150,9 +150,9 @@ module decode(input  logic [1:0] Op,
   // Interrupt enable latch
   always_latch
     if(Op==2'b11)
-      if (Funct[1:0] == 2'b00)
+      if (Funct[5:4] == 2'b00)
         InterruptEnable = 1;
-      else if (Funct[1:0] == 2'b01)
+      else if (Funct[5:4] == 2'b01)
         InterruptEnable = 0;
 
   assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
