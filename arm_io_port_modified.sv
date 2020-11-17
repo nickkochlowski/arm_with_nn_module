@@ -29,8 +29,8 @@ endmodule
 module arm_with_nn_module_tb(input  logic clk, reset,
            input  logic [7:0] INport,
            output logic [7:0] OUTport,
-			  output logic ready, 
-			  output logic [31:0] WriteData, DataAdr);
+        output logic ready, 
+        output logic [31:0] WriteData, DataAdr);
 
   // logic [31:0] WriteData, DataAdr; 
   logic        MemWrite, MemtoReg, PortSel, run_inference, nn_we;
@@ -92,7 +92,7 @@ module arm(input  logic        clk, reset,
 endmodule
 
 module controller(input  logic         clk, reset,
-	                input  logic [31:12] Instr,
+                  input  logic [31:12] Instr,
                   input  logic [3:0]   ALUFlags,
                   output logic [1:0]   RegSrc,
                   output logic         RegWrite,
@@ -130,23 +130,23 @@ module decode(input  logic [1:0] Op,
   // Main Decoder
   
   always_comb
-  	casex(Op)
-  	                        // Data processing immediate
-  	  2'b00: if (Funct[5])  controls = 10'b0000101001; 
-  	                        // Data processing register
-  	         else           controls = 10'b0000001001; 
-  	                        // LDR
-  	  2'b01: if (Funct[0])  controls = 10'b0001111000; 
-  	                        // STR
-  	         else           controls = 10'b1001110100; 
-  	                        // B
-  	  2'b10:                controls = 10'b0110100010;
-  	                        // Neural control
-      2'b11:			          controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
-  	                        // Unimplemented
-  	  default:              controls = 10'bx;          
-  	endcase
-	
+    casex(Op)
+                            // Data processing immediate
+      2'b00: if (Funct[5])  controls = 10'b0000101001; 
+                            // Data processing register
+              else           controls = 10'b0000001001; 
+                            // LDR
+      2'b01: if (Funct[0])  controls = 10'b0001111000; 
+                            // STR
+              else           controls = 10'b1001110100; 
+                            // B
+      2'b10:                controls = 10'b0110100010;
+                            // Neural control
+      2'b11:                controls = 10'b0000000000;  // RegSrc, ImmSrc, ALUSrc, MemtoReg, RegW, MemW, Branch, ALUOp
+                            // Unimplemented
+      default:              controls = 10'bx;          
+    endcase
+
   // Interrupt enable latch
   always_latch
     if(Op==2'b11)
@@ -162,16 +162,16 @@ module decode(input  logic [1:0] Op,
   always_comb
     if (ALUOp) begin                 // which DP Instr?
       case(Funct[4:1]) 
-  	    4'b0100: ALUControl = 2'b00; // ADD
-  	    4'b0010: ALUControl = 2'b01; // SUB
+        4'b0100: ALUControl = 2'b00; // ADD
+        4'b0010: ALUControl = 2'b01; // SUB
         4'b0000: ALUControl = 2'b10; // AND
-  	    4'b1100: ALUControl = 2'b11; // ORR
-  	    default: ALUControl = 2'bx;  // unimplemented
+        4'b1100: ALUControl = 2'b11; // ORR
+        default: ALUControl = 2'bx;  // unimplemented
       endcase
       // update flags if S bit is set 
-	// (C & V only updated for arith instructions)
+  // (C & V only updated for arith instructions)
       FlagW[1]      = Funct[0]; // FlagW[1] = S-bit
-	// FlagW[0] = S-bit & (ADD | SUB)
+  // FlagW[0] = S-bit & (ADD | SUB)
       FlagW[0]      = Funct[0] & 
         (ALUControl == 2'b00 | ALUControl == 2'b01); 
     end else begin
@@ -319,7 +319,7 @@ module extend(input  logic [23:0] Instr,
                // 24-bit two's complement shifted branch 
       2'b10:   ExtImm = {{6{Instr[23]}}, Instr[23:0], 2'b00}; 
       default: ExtImm = 32'bx; // undefined
-    endcase             
+    endcase
 endmodule
 
 module alu(input logic [31:0] SrcA, SrcB,
@@ -404,7 +404,7 @@ endmodule
 
 module link (input logic [31:0] PC, 
              input logic latchwe, 
-				 output logic [31:0] LinkAddress);
+             output logic [31:0] LinkAddress);
 
   always_latch
   begin
@@ -422,7 +422,7 @@ module pulsegenerator (input logic clk, ready, reset,
   begin
   
     if(reset) old_s = 0;
-	  else begin
+    else begin
       new_s = ready;
       if(new_s != old_s && new_s)
         pulse = 1;
