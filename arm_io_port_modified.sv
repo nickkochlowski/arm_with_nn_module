@@ -1,11 +1,11 @@
 // arm_io_port_modified.v
 // Single-cycle implementation of a subset of ARMv4 with i/O port capability modified for neural network module compatibility.
 
-module arm_with_nn_module_tb1();
+module arm_with_nn_module_tb();
 
-  logic        clk;
-  logic        reset;
+  logic        clk, reset, ready;
   logic [7:0] INport, OUTport;
+  logic [31:0] WriteData, DataAdr;
 
   // instantiate device to be tested
   arm_with_nn_module dut(clk, reset, INport, OUTport);
@@ -26,7 +26,7 @@ endmodule
 
 
 
-module arm_with_nn_module_tb(input  logic clk, reset,
+module arm_with_nn_module(input  logic clk, reset,
            input  logic [7:0] INport,
            output logic [7:0] OUTport,
         output logic ready, 
@@ -43,10 +43,10 @@ module arm_with_nn_module_tb(input  logic clk, reset,
   arm arm(clk, reset, PC, Instr, MemWrite, MemtoReg, DataAdr, 
           WriteData, ReadData, run_inference, ready);
   imem imem(PC, Instr);
-  mixed_width_true_dual_port_ram RAM(nn_address, DataAdr[31:2], nn_wd, WriteData, nn_we, MemWrite, clk, nn_rd, MemData);   //   1: nn | 2: arm 
+  mixed_width_true_dual_port_ram RAM({22'b0, nn_address}, DataAdr[31:2], nn_wd, WriteData, nn_we, MemWrite, clk, nn_rd, MemData);   //   1: nn | 2: arm 
   neural nn(clk, reset, run_inference, ready, nn_address, nn_wd, nn_we, nn_rd);
   // instantiate i/O ports at 0x7FC address
-  cmp2 #(32) compare  (32'h7FC, DataAdr, PortSel);
+  cmp2 #(32) compare  (32'd1000, DataAdr, PortSel);
   mux2 #(32) mem_portmux (MemData, {24'b0,INData}, PortSel, ReadData);
   port inport (clk, PortSel & MemtoReg, INport, INData);
   port outport (clk, PortSel & MemWrite, WriteData[7:0], OUTport);
@@ -106,7 +106,7 @@ module controller(input  logic         clk, reset,
   logic [1:0] FlagW;
   logic       PCS, RegW, MemW;
   
-  decode dec(Instr[27:26], Instr[25:20], Instr[15:12],
+  decode dec(reset, Instr[27:26], Instr[25:20], Instr[15:12],
              FlagW, PCS, RegW, MemW,
              MemtoReg, ALUSrc, ImmSrc, RegSrc, ALUControl,
              InterruptEnable, run_inference, ReturnLink);
@@ -115,7 +115,8 @@ module controller(input  logic         clk, reset,
                PCSrc, RegWrite, MemWrite);
 endmodule
 
-module decode(input  logic [1:0] Op,
+module decode(input  logic       reset, 
+              input  logic [1:0] Op,
               input  logic [5:0] Funct,
               input  logic [3:0] Rd,
               output logic [1:0] FlagW,
@@ -149,11 +150,15 @@ module decode(input  logic [1:0] Op,
 
   // Interrupt enable latch
   always_latch
+  begin
+    if(reset)
+	   InterruptEnable = 0;
     if(Op==2'b11)
       if (Funct[5:4] == 2'b00)
         InterruptEnable = 1;
       else if (Funct[5:4] == 2'b01)
         InterruptEnable = 0;
+  end
 
   assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
           RegW, MemW, Branch, ALUOp} = controls; 
@@ -182,8 +187,8 @@ module decode(input  logic [1:0] Op,
   // PC Logic
   assign PCS  = ((Rd == 4'b1111) & RegW) | Branch;
   // Run Inference and Return Link Logic
-  assign run_inference = ((Op == 2'b11) & (Funct[1:0] == 2'b10));
-  assign ReturnLink = ((Op == 2'b11) & (Funct[1:0] == 2'b11));
+  assign run_inference = ((Op == 2'b11) & (Funct[5:4] == 2'b10));
+  assign ReturnLink = ((Op == 2'b11) & (Funct[5:4] == 2'b11));
 
 endmodule
 
@@ -260,13 +265,15 @@ module datapath(input  logic        clk, reset,
 
   logic [31:0] PCNext, PCPlus4, PCPlus8;
   logic [31:0] ExtImm, SrcA, SrcB, Result;
+  logic [31:0] LinkAddress;
   logic [3:0]  RA1, RA2;
+  logic [1:0]  MuxSelector;
 
   // next PC logic
-  mux4 #(32)      pcmux(PCPlus4, Result, 32'h2000, LinkAddress, MuxSelector, PCNext);
-  mux2 #(2)       linkmux({(InterruptEnable & pulse), PCSrc}, 2'b11, ReturnLink, MuxSelector);
+  mux4 #(32)      pcmux(PCPlus4, Result, 32'd108, LinkAddress, MuxSelector, PCNext);
+  mux2 #(2)       linkmux({(InterruptEnable & pulse), (PCSrc & ~pulse)}, 2'b11, ReturnLink, MuxSelector);
   pulsegenerator  intpulse(clk, ready, reset, pulse);
-  link            linklatch(PC, pulse, LinkAddress);
+  link            linklatch(PC, pulse, reset, LinkAddress);
   flopr #(32)     pcreg(clk, reset, PCNext, PC);
   adder #(32)     pcadd1(PC, 32'b100, PCPlus4);
   adder #(32)     pcadd2(PCPlus4, 32'b100, PCPlus8);
@@ -403,12 +410,13 @@ module mux4 #(parameter WIDTH = 8)
 endmodule
 
 module link (input logic [31:0] PC, 
-             input logic latchwe, 
+             input logic latchwe, reset, 
              output logic [31:0] LinkAddress);
 
   always_latch
   begin
-    if (latchwe) LinkAddress = PC;
+    if (reset) LinkAddress = 0;
+    else if (latchwe) LinkAddress = PC;
   end
 
 endmodule

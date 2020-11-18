@@ -191,9 +191,9 @@ always_comb begin // lógica combinacional de salida (next_state)
     end
 
     s1 : begin
-      n_layer_ptr = 10'h0000;
-      n_input_ptr = 10'h0200;
-      n_result_ptr = 10'h0202;
+      n_layer_ptr = 32'd0000;
+      n_input_ptr = 32'd1015;
+      n_result_ptr = 32'd1022;
       n_RAM_address = layer_ptr;
     end
 
@@ -251,8 +251,8 @@ always_comb begin // lógica combinacional de salida (next_state)
       n_input_fifo_wr = 1;
       n_input_mux = 0;
 
-      n_RAM_address = input_ptr + 1;
-      n_input_ptr = input_ptr + 1;
+      n_RAM_address = input_ptr + 4;
+      n_input_ptr = input_ptr + 4;
       n_input_counter = input_counter + 1;
     end
 
