@@ -6,7 +6,7 @@ module control_unit(input logic clk, reset, run_inference,
 				output logic [3:0] shift,
             output logic [15:0] fifo_rd,
             output logic [9:0] RAM_address,
-				output logic [7:0] outputNodeNumber, result_selector);
+				output logic [7:0] outputNodeNumber);
 	
   logic begin_initialize_registers, begin_load_data, begin_process_data, begin_write_output, registers_initialized, data_loaded, data_processed, output_written;
   logic [7:0] stage, totalLayerNumber;
@@ -17,7 +17,7 @@ module control_unit(input logic clk, reset, run_inference,
   
   complete_aux secondary(clk, reset, begin_initialize_registers, begin_load_data, begin_process_data, begin_write_output, RAM_rd, stage,
                         registers_initialized, data_loaded, data_processed, output_written, RAM_we, fifo_wr, input_fifo_wr, input_fifo_rd, input_mux, bias, reset_accumulators, output_layer, 
-                        RAM_address, totalLayerNumber, output_mux, fifo_wr_demux, fifo_rd, shift, outputNodeNumber, result_selector);
+                        RAM_address, totalLayerNumber, output_mux, fifo_wr_demux, fifo_rd, shift, outputNodeNumber);
 	
 endmodule
 

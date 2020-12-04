@@ -5,13 +5,13 @@ module complete_aux (input logic clk, reset, begin_initialize_registers, begin_l
                       output logic [7:0] totalLayerNumber, output_mux, fifo_wr_demux,
                       output logic [15:0] fifo_rd,
 							 output logic [3:0] shift,
-							 output logic [7:0] nodeNumberB, result_counter);
+							 output logic [7:0] nodeNumberB);
 
 logic n_registers_initialized, n_data_loaded, n_data_processed, n_output_written, n_RAM_we, n_reset_accumulators, n_output_layer;
 logic n_input_mux, n_fifo_wr, n_input_fifo_rd, n_input_fifo_wr, n_bias;
 logic [3:0] n_shift;
 logic [7:0] n_totalLayerNumber, n_nodeNumberA, nodeNumberA, n_nodeNumberB;
-logic [7:0] n_input_counter, input_counter, n_progress_counter, progress_counter, n_result_counter;
+logic [7:0] n_input_counter, input_counter, n_progress_counter, progress_counter;
 logic [7:0] n_fifo_wr_ptr, fifo_wr_ptr, n_fifo_wr_demux, n_output_mux;
 logic [15:0] n_fifo_rd;
 logic [31:0] n_input_ptr, input_ptr, n_data_ptr, data_ptr, n_result_ptr, result_ptr, n_layer_ptr, layer_ptr, n_RAM_address, n_counter, counter;
@@ -120,10 +120,7 @@ always_comb begin // lógica combinacional para el siguiente estado
     end
 
     s15 : begin
-      if(result_counter >= 2)
-        next_state = s16;
-      else
-        next_state = s15; //@ loopback
+      next_state = s16;
     end
 
     s16 : begin
@@ -156,7 +153,6 @@ always_comb begin // lógica combinacional de salida (next_state)
   n_counter = counter;
   n_input_counter = input_counter;
   n_progress_counter = progress_counter;
-  n_result_counter = result_counter;
 
   n_fifo_wr = fifo_wr;
   n_fifo_wr_ptr = fifo_wr_ptr;
@@ -184,7 +180,6 @@ always_comb begin // lógica combinacional de salida (next_state)
       n_counter = 0;
       n_progress_counter = 0;
       n_input_counter = 0;
-      n_result_counter = 0;
 		
       n_fifo_wr_ptr = 0;
       n_bias = 0;
@@ -193,7 +188,7 @@ always_comb begin // lógica combinacional de salida (next_state)
     s1 : begin
       n_layer_ptr = 32'd0000;
       n_input_ptr = 32'd1015;
-      n_result_ptr = 32'd1022;
+      n_result_ptr = 32'd1023;
       n_RAM_address = layer_ptr;
     end
 
@@ -296,11 +291,9 @@ always_comb begin // lógica combinacional de salida (next_state)
     end
 
     s15 : begin
-	    n_output_layer = 1;
+	   n_output_layer = 1;
       n_RAM_address = result_ptr;
       n_RAM_we = 1;
-      n_result_ptr = result_ptr + 1;
-      n_result_counter = result_counter + 1;
     end
 
     s16 : begin
@@ -338,7 +331,6 @@ always_ff @ (posedge clk, posedge reset) // registros de salida
       counter <= 0;
       input_counter <= 0;
       progress_counter <= 0;
-      result_counter <= 0;
 
       fifo_wr <= 0;
       fifo_wr_ptr <= 0;
@@ -378,7 +370,6 @@ always_ff @ (posedge clk, posedge reset) // registros de salida
       counter <= n_counter;
       input_counter <= n_input_counter;
       progress_counter <= n_progress_counter;
-      result_counter <= n_result_counter;
 
       fifo_wr <= n_fifo_wr;
       fifo_wr_ptr <= n_fifo_wr_ptr;

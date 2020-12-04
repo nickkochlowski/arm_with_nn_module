@@ -270,7 +270,7 @@ module datapath(input  logic        clk, reset,
   logic [1:0]  MuxSelector;
 
   // next PC logic
-  mux4 #(32)      pcmux(PCPlus4, Result, 32'd108, LinkAddress, MuxSelector, PCNext);
+  mux4 #(32)      pcmux(PCPlus4, Result, 32'd116, LinkAddress, MuxSelector, PCNext);
   mux2 #(2)       linkmux({(InterruptEnable & pulse), (PCSrc & ~pulse)}, 2'b11, ReturnLink, MuxSelector);
   pulsegenerator  intpulse(clk, ready, reset, pulse);
   link            linklatch(PC, pulse, reset, LinkAddress);

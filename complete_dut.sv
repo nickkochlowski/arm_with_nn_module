@@ -11,10 +11,10 @@ module neural(input  logic clk, reset, run_inference,
   logic [7:0] w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16;
   logic [7:0] d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15;
   logic [15:0] fifo_rd, dout;
-  logic [7:0] partial_classification, outputNodeNumber, result_selector;
+  logic [7:0] partial_classification, outputNodeNumber;
 
   control_unit control(clk, reset, run_inference, RAM_rd, ready, RAM_we, fifo_wr, input_fifo_wr, input_fifo_rd, input_mux, bias, reset_accumulators, output_layer, 
-                        output_mux, fifo_wr_demux, shift, fifo_rd, RAM_address, outputNodeNumber, result_selector);
+                        output_mux, fifo_wr_demux, shift, fifo_rd, RAM_address, outputNodeNumber);
 
   weight_fifos_16 weight_fifos(clk, reset, fifo_rd, dout, RAM_rd, empty_w, full_w, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16);
 
@@ -25,7 +25,7 @@ module neural(input  logic clk, reset, run_inference,
                                         d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15,
                                         xout);
 													 
-  classifier output_classifier(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, outputNodeNumber, result_selector-1, RAM_wd);
+  classifier output_classifier(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, outputNodeNumber, RAM_wd);
 
   nn_mux_2 input_multiplexer(input_mux, RAM_rd, output_data, input_data);
   nn_mux_2 bias_multiplexer(bias, input_data, bias_data, y);
@@ -40,7 +40,6 @@ endmodule
 Este es el módulo neuronal completo. Contiene:
  - unidad de control
  - unidad de procesamiento (systolic array)
- - memoria RAM
  - fifos de datos de entrada y pesos
  - multiplexores y demultiplexores
 */
